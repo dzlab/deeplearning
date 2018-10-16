@@ -1,0 +1,220 @@
+\section{Week 2 - ML Strategy (2)}
+\subsection{Error Analysis}
+
+\subsubsection{Carrying out error analysis}
+Manually examining mistakes that your algorithm is making, can give you insights into what to do next.
+\newline
+Suppose you have a Cat classifier with acurracy of 90\%, and error of 10\%. Looking at the wronly classifed pictures, you realize they're Dog's pictures.
+\newline
+Question: Should you try to make your cat classifier do better on dogs?
+\newline
+This will take a long time (may be months), what you should do as part of the error analysis:
+\begin{itemize}
+    \item Get ~ 100 mislabeled dev set examples
+    \item Count up how many are dogs.
+\end{itemize}
+You found that 5\% percent of the errors are dogs, so the best you can do is you improve the algo error from 10\% to 9.5\%, Ceiling or upper bound when working on the dog problem helps you.
+
+\subsubsection{Cleaning up incorrectly labeled data}
+When trying to understand what mistakes it is making, you should look at the data and try to counter the fraction of errors. This small time of counting data can really help you prioritize where to go next and trying to decide what ideas or what directions to prioritize things.
+
+\subsubsection{Build your first system quickly, then iterate}
+\texttt{Build system quickly, then iterate}: Depending on the area of application, the guideline below will help you prioritize when you build your system.
+
+Guideline:
+\begin{enumerate}
+    \item Set up development/ test set and metrics
+    \begin{itemize}
+        \item Set up a target 
+    \end{itemize}
+    \item Build an initial system quickly
+    \begin{itemize}
+        \item Train training set quickly: Fit the parameters
+        \item Development set: Tune the parameters
+        \item Test set: Assess the performance
+    \end{itemize}
+    \item Use Bias/Variance analysis \& Error analysis to prioritize next steps
+\end{enumerate}
+
+\subsection{Mismatched training and dev/test set}
+\subsubsection{Training and testing on different distributions}
+Training a cat classifier for mobile where the uploaded pictures have poor quality. Best option is the training to include 200,000 images from the web and 5,000 from the mobile app. The dev set will be 2,500 images from the mobile app, and the test set will be 2,500 images also from the mobile app. 
+\begin{itemize}
+    \item The advantage of this way of splitting up your data into train, dev, and test, is that you're now aiming the target where you want it to be. Your dev set has data uploaded from the mobile app and that's the distribution of images you really care about, in order to build a machine learning system that does really well on the mobile app distribution of images.
+    \item The disadvantage is that now your training distribution is different from your dev and test set distributions. 
+\end{itemize}
+
+\subsubsection{Bias and Variance with mismatched data distributions}
+
+\subsubsection{Addressing data mismatch}
+This is a general guideline to address data mismatch:
+\begin{itemize}
+    \item Perform manual error analysis to understand the error differences between training,
+development/test sets. Development should never be done on test set to avoid overfitting.
+    \item Make training data or collect data similar to development and test sets. To make the training data more similar to your development set, you can use is artificial data synthesis. However, it is possible that if you might be accidentally simulating data only from a tiny subset of the space of all possible examples.
+\end{itemize}
+
+\subsection{Learning from multiple tasks}
+\subsubsection{Transfer learning}
+Example in radiology, it's difficult to get that many x-ray scans to build a good radiology diagnosis system. So in that case, you might find a related but different task, such as image recognition, where you can get maybe a million images and learn a lot of load-over features from that, so that you can then try to do well on Task B on your radiology task despite not having that much data for it.
+
+\subsubsection{Multi-task learning}
+\begin{quote}
+    Multi-task learning and transfer learning are both important tools to have in your tool bag.
+\end{quote}
+\texttt{Transfer learning} and \texttt{Multi-task learning} often you're presented in a similar way, in practice there are a lot more applications of transfer learning than of multi-task learning. In fact, it's just difficult to set up or to find so many different tasks that you would actually want to train a single neural network for. Again, with some sort of computer vision, object detection examples being the most notable exception. 
+
+\subsection{End-to-end deep learning}
+\subsubsection{What is end-to-end deep learning?}
+There have been some data processing systems, or learning systems that require multiple stages of processing. And what end-to-end deep learning does, is it can take all those multiple stages, and replace it usually with just a single neural network.
+
+End to end is only interesting in the case there is a lot of data. E.g. in image recognition, the best approach to date, seems to be a multi-step approach, where first, you run one piece of software to detect the person's face. So this first detector to figure out where's the person's face. Having detected the person's face, you then zoom in to that part of the image and crop that image so that the person's face is centered. Then, it is this picture that I guess I drew here in red, this is then fed to the neural network, to then try to learn, or estimate the person's identity.
+ 
+\subsubsection{Whether to use end-to-end deep learning}
+It's called end to end because it's trying to map an input to the output directly without mid-steps.
+\subsection{Machine Learning flight simulator}
+
+\subsubsection{QUIZ - Autonomous driving (case study)}
+\textbf{1.} To help you practice strategies for machine learning, in this week we’ll present another scenario and ask how you would act. We think this “simulator” of working in a machine learning project will give a task of what leading a machine learning project could be like!
+
+You are employed by a startup building self-driving cars. You are in charge of detecting road signs (stop sign, pedestrian crossing sign, construction ahead sign) and traffic signals (red and green lights) in images. The goal is to recognize which of these objects appear in each image. As an example, the above image contains a pedestrian crossing sign and red traffic lights
+
+Your 100,000 labeled images are taken using the front-facing camera of your car. This is also the distribution of data you care most about doing well on. You think you might be able to get a much larger dataset off the internet, that could be helpful for training even if the distribution of internet data is not the same.
+
+You are just getting started on this project. What is the first thing you do? Assume each of the steps below would take about an equal amount of time (a few days).
+\begin{itemize}
+    \item Spend a few days collecting more data using the front-facing camera of your car, to better understand how much data per unit time you can collect.
+    \item Spend a few days getting the internet data, so that you understand better what data is available.
+    \item Spend a few days checking what is human-level performance for these tasks so that you can get an accurate estimate of Bayes error.
+    \item Spend a few days training a basic model and see what mistakes it makes. (X) As discussed in lecture, applied ML is a highly iterative process. If you train a basic model and carry out error analysis (see what mistakes it makes) it will help point you in more promising directions.
+\end{itemize}
+\textbf{2.} Your goal is to detect road signs (stop sign, pedestrian crossing sign, construction ahead sign) and traffic signals (red and green lights) in images. The goal is to recognize which of these objects appear in each image. You plan to use a deep neural network with ReLU units in the hidden layers.
+
+For the output layer, a softmax activation would be a good choice for the output layer because this is a multi-task learning problem. True/False?
+\begin{itemize}
+    \item True (X 1)
+    \item False (X 2)
+\end{itemize}
+\textbf{3.} You are carrying out error analysis and counting up what errors the algorithm makes. Which of these datasets do you think you should manually go through and carefully examine, one image at a time?
+\begin{itemize}
+    \item 500 images on which the algorithm made a mistake (X) Focus on images that the algorithm got wrong. Also, 500 is enough to give you a good initial sense of the error statistics. There’s probably no need to look at 10,000, which will take a long time.
+    \item 500 randomly chosen images
+    \item 10,000 images on which the algorithm made a mistake
+    \item 10,000 randomly chosen images
+\end{itemize}
+\textbf{4.} After working on the data for several weeks, your team ends up with the following data:
+\begin{itemize}
+    \item 100,000 labeled images taken using the front-facing camera of your car.
+    \item 900,000 labeled images of roads downloaded from the internet.
+    \item Each image’s labels precisely indicate the presence of any specific road signs and traffic signals or combinations of them. For example, $y^{(i)} = \begin{bmatrix}
+           1 \\
+           0 \\
+           0 \\
+           1 \\
+           0
+         \end{bmatrix}$ means the image contains a stop sign and a red traffic light.
+\end{itemize}
+Because this is a multi-task learning problem, you need to have all your $y^{(i)}$
+  vectors fully labeled. If one example is equal to $\begin{bmatrix}
+           1 \\
+           ? \\
+           1 \\
+           1 \\
+           ?
+         \end{bmatrix}$ then the learning algorithm will not be able to use that example. True/False?
+\begin{itemize}
+    \item True
+    \item False (X) As seen in the lecture on multi-task learning, you can compute the cost such that it is not influenced by the fact that some entries haven’t been labeled.
+\end{itemize}
+\textbf{5.} The distribution of data you care about contains images from your car’s front-facing camera; which comes from a different distribution than the images you were able to find and download off the internet. How should you split the dataset into train/dev/test sets?
+\begin{itemize}
+    \item Mix all the 100,000 images with the 900,000 images you found online. Shuffle everything. Split the 1,000,000 images dataset into 600,000 for the training set, 200,000 for the dev set and 200,000 for the test set.
+    \item Choose the training set to be the 900,000 images from the internet along with 80,000 images from your car’s front-facing camera. The 20,000 remaining images will be split equally in dev and test sets. (X) Yes. As seen in lecture, it is important that your dev and test set have the closest possible distribution to “real”-data. It is also important for the training set to contain enough “real”-data to avoid having a data-mismatch problem.
+    \item Mix all the 100,000 images with the 900,000 images you found online. Shuffle everything. Split the 1,000,000 images dataset into 980,000 for the training set, 10,000 for the dev set and 10,000 for the test set.
+    \item Choose the training set to be the 900,000 images from the internet along with 20,000 images from your car’s front-facing camera. The 80,000 remaining images will be split equally in dev and test sets.
+\end{itemize}
+\textbf{6.} Assume you’ve finally chosen the following split between of the data:
+
+You also know that human-level error on the road sign and traffic signals classification task is around 0.5\%. Which of the following are True? (Check all that apply).
+\begin{itemize}
+    \item You have a large data-mismatch problem because your model does a lot better on the training-dev set than on the dev set (X)
+    \item Your algorithm overfits the dev set because the error of the dev and test sets are very close.
+    \item You have a large avoidable-bias problem because your training error is quite a bit higher than the human-level error. (X)
+    \item You have a large variance problem because your training error is quite higher than the human-level error.
+    \item You have a large variance problem because your model is not generalizing well to data from the same training distribution but that it has never seen before.
+\end{itemize}
+\textbf{7.} Based on table from the previous question, a friend thinks that the training data distribution is much easier than the dev/test distribution. What do you think?
+\begin{itemize}
+    \item Your friend is right. (I.e., Bayes error for the training data distribution is probably lower than for the dev/test distribution.) (X 2)
+    \item Your friend is wrong. (I.e., Bayes error for the training data distribution is probably higher than for the dev/test distribution.) (X 1)
+    \item There’s insufficient information to tell if your friend is right or wrong. (X 3)
+\end{itemize}
+\textbf{8.} You decide to focus on the dev set and check by hand what are the errors due to. Here is a table summarizing your discoveries:
+
+In this table, 4.1\%, 8.0\%, etc.are a fraction of the total dev set (not just examples your algorithm mislabeled). I.e. about 8.0/14.3 = 56% of your errors are due to foggy pictures.
+
+The results from this analysis implies that the team’s highest priority should be to bring more foggy pictures into the training set so as to address the 8.0\% of errors in that category. True/False?
+\begin{itemize}
+    \item True because it is the largest category of errors. As discussed in lecture, we should prioritize the largest category of error to avoid wasting the team’s time. (X 2) This is the right way to go unless it is hard to get access to foggy data. Another answer safer and more appropriate in this situation.
+    \item True because it is greater than the other error categories added together (8.0 > 4.1+2.2+1.0).
+    \item False because this would depend on how easy it is to add this data and how much you think your team thinks it’ll help. (X 3)
+    \item False because data augmentation (synthesizing foggy images by clean/non-foggy images) is more efficient. (X 1)
+\end{itemize}
+\textbf{9.} You can buy a specially designed windshield wiper that help wipe off some of the raindrops on the front-facing camera. Based on the table from the previous question, which of the following statements do you agree with?
+\begin{itemize}
+    \item 2.2\% would be a reasonable estimate of the maximum amount this windshield wiper could improve performance. (X) Yes. You will probably not improve performance by more than 2.2\% by solving the raindrops problem. If your dataset was infinitely big, 2.2\% would be a perfect estimate of the improvement you can achieve by purchasing a specially designed windshield wiper that removes the raindrops.
+    \item 2.2\% would be a reasonable estimate of the minimum amount this windshield wiper could improve performance.
+    \item 2.2\% would be a reasonable estimate of how much this windshield wiper will improve performance.
+    \item 2.2\% would be a reasonable estimate of how much this windshield wiper could worsen performance in the worst case.
+\end{itemize}
+\textbf{10.} You decide to use data augmentation to address foggy images. You find 1,000 pictures of fog off the internet, and “add” them to clean images to synthesize foggy days, like this:
+
+Which of the following statements do you agree with?
+\begin{itemize}
+    \item There is little risk of overfitting to the 1,000 pictures of fog so long as you are combing it with a much larger (>>1,000) of clean/non-foggy images.
+    \item Adding synthesized images that look like real foggy pictures taken from the front-facing camera of your car to training dataset won’t help the model improve because it will introduce avoidable-bias.
+    \item So long as the synthesized fog looks realistic to the human eye, you can be confident that the synthesized data is accurately capturing the distribution of real foggy images (or a subset of it), since human vision is very accurate for the problem you’re solving. (X) Yes. If the synthesized images look realistic, then the model will just see them as if you had added useful data to identify road signs and traffic signals in a foggy weather. I will very likely help.
+\end{itemize}
+\textbf{11.} After working further on the problem, you’ve decided to correct the incorrectly labeled data on the dev set. Which of these statements do you agree with? (Check all that apply).
+\begin{itemize}
+    \item You should also correct the incorrectly labeled data in the test set, so that the dev and test sets continue to come from the same distribution (X) Yes because you want to make sure that your dev and test data come from the same distribution for your algorithm to make your team’s iterative development process is efficient.
+    \item You should correct incorrectly labeled data in the training set as well so as to avoid your training set now being even more different from your dev set. (X 1) No, deep learning algorithms are quite robust to having slightly different train and dev distributions.
+    \item You should not correct the incorrectly labeled data in the test set, so that the dev and test sets continue to come from the same distribution
+    \item You should not correct incorrectly labeled data in the training set as it does not worth the time. (X 3)
+\end{itemize}
+\textbf{12.} So far your algorithm only recognizes red and green traffic lights. One of your colleagues in the startup is starting to work on recognizing a yellow traffic light. (Some countries call it an orange light rather than a yellow light; we’ll use the US convention of calling it yellow.) Images containing yellow lights are quite rare, and she doesn’t have enough data to build a good model. She hopes you can help her out using transfer learning.
+
+What do you tell your colleague?
+\begin{itemize}
+    \item She should try using weights pre-trained on your dataset, and fine-tuning further with the yellow-light dataset.
+    \item If she has (say) 10,000 images of yellow lights, randomly sample 10,000 images from your dataset and put your and her data together. This prevents your dataset from “swamping” the yellow lights dataset. (X 1)
+    \item You cannot help her because the distribution of data you have is different from hers, and is also lacking the yellow label. (X 3)
+    \item Recommend that she try multi-task learning instead of transfer learning using all the data. (X 2)
+\end{itemize}
+\textbf{13.} Another colleague wants to use microphones placed outside the car to better hear if there’re other vehicles around you. For example, if there is a police vehicle behind you, you would be able to hear their siren. However, they don’t have much to train this audio system. How can you help?
+\begin{itemize}
+    \item Transfer learning from your vision dataset could help your colleague get going faster. Multi-task learning seems significantly less promising.
+    \item Multi-task learning from your vision dataset could help your colleague get going faster. Transfer learning seems significantly less promising. (X 1)
+    \item Either transfer learning or multi-task learning could help our colleague get going faster.
+    \item Neither transfer learning nor multi-task learning seems promising. (X 2) Yes. The problem he is trying to solve is quite different from yours. The different dataset structures make it probably impossible to use transfer learning or multi-task learning.
+\end{itemize}
+\textbf{14.} To recognize red and green lights, you have been using this approach:
+\begin{itemize}
+    \item (A) Input an image (x) to a neural network and have it directly learn a mapping to make a prediction as to whether there’s a red light and/or green light (y).
+\end{itemize}
+A teammate proposes a different, two-step approach:
+\begin{itemize}
+    \item (B) In this two-step approach, you would first (i) detect the traffic light in the image (if any), then (ii) determine the color of the illuminated lamp in the traffic light.
+\end{itemize}
+Between these two, Approach B is more of an end-to-end approach because it has distinct steps for the input end and the output end. True/False?
+\begin{itemize}
+    \item True
+    \item False (X) Yes. (A) is an end-to-end approach as it maps directly the input (x) to the output (y).
+\end{itemize}
+\textbf{15.} Approach A (in the question above) tends to be more promising than approach B if you have a \_\_\_\_\_\_\_\_ (fill in the blank).
+\begin{itemize}
+    \item Large training set (X) Yes. In many fields, it has been observed that end-to-end learning works better in practice, but requires a large amount of data.
+    \item Multi-task learning problem.
+    \item Large bias problem.
+    \item Problem with a high Bayes error.
+\end{itemize}
