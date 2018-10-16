@@ -1,0 +1,139 @@
+\section*{Week 1}
+\subsection*{Practical aspects of Deep Learning}
+\begin{quote}
+ In this week, you've learned about:
+ \begin{itemize}
+    \item how to set up your train, dev, and test sets,
+    \item how to analyze bias and variance and what things to do if you have high bias versus high variance versus maybe high bias and high variance.
+    \item how to apply different forms of regularization, like L2 regularization and dropout on your neural network.
+    \item So some tricks for speeding up the training of your neural network.
+    \item And then finally, gradient checking.
+\end{itemize}
+You get to exercise a lot of these ideas.
+\end{quote}
+
+\subsubsection*{Setting up your Machine Learning Application}
+\textbf{Train / Dev / Test sets} Traditionally dataset is split into 70\% training and 30\% test set, or 60\%/20\%/20\% but now a days as datasest are in the order of millions or more the percentage of dev/test sets is reduced to smaller proportions (e.g. 1\%).
+\newline
+\textbf{Bias / Variance} 
+\begin{itemize}
+    \item high Bias when the algorithm is under-fitting (e.g. linear regression)can be fixed by using a NN of large number of units.
+    \item high Variance when the algorithm is over-fitting (e.g. complex logistic) can be fixed by using more data or using regularization.
+    \item high Bias high Variance is the worst kind of algorithms, e.g. a linear regression that's too flexible in some region (e.g. middle).
+\end{itemize}
+\textbf{Basic Recipe for Machine Learning}
+
+\subsubsection*{Regularizing your neural network}
+\textbf{Regularization}
+\newline
+\textbf{Why regularization reduces overfitting?}
+if $\lambda$ is large then $w^{[l]}$ will be small, then as a result $z^{[l]} = w^{[l]} * a^{[l-1]} + b^{[l]}$ will be small. If $z$ is close to zero then the activation function (e.g. $tanh$) will be in the $0$ region where it looks like a line.
+
+i.e. the learning function is close to a linear regression which will avoid overfitting.
+\newline
+\textbf{Dropout Regularization}
+Another technique of regularization. For each training example, you would train it using one of these neural based networks where you have removed some units and all it's links.
+Different possible implementations, like \textbf{\textit{Inverted Dropout}} which is the most used technique.
+\newline
+\textbf{Understanding Dropout}
+A regularization technique used to avoid over-fitting, used a lot in Computer Vision as you never have enough data and your input is very large (number of pixels).
+\newline
+One downside is that the Cost function is no longer well defined, as nodes can go away randomly. As a result, debugging the learning algorithm by plotting the cost function by iterations is no longer effective. One way to avoid this, is to run the algorithm with a dropout threshold set to 1 in order to keep all nodes then plot the cost function, then to learn the parameters reset the dropout to usual values.
+\newline
+\textbf{Other regularization methods}
+\begin{description}
+    \item[Data augmentation] Apply some functions to the existent data set to create new samples e.g. flipping a picture or applying a distortion to a digit.
+    \item[Early stopping] as you run gradient descent, you plot the cost function by iterations or training error in the training set. Plus you plot the dev-set error. The latter usually goes down then from certain point it start going up. What early stopping does is to stop training the NN halfway at a moment where the NN was doing good.
+    \item[Weight decay] after each update, the weights are multiplied by a factor slightly less than 1. This prevents the weights from growing too large, and can be seen as gradient descent on a quadratic regularization term.
+\end{description}
+Orthogonolisation: think about when task at a time. e.g. optimize the cost function, then find ways to avoid overfitting.
+The downside of \textbf{\textit{Early stopping}} is that it's combinig those two steps. One tool that mixes the two processes.
+
+\subsubsection*{Setting up your optimization problem}
+\textbf{Normalizing inputs}
+\newline
+\textbf{Vanishing / Exploding gradients} deep networks suffer from the problems of vanishing or exploding gradients. Which was for a long time this problem was a huge barrier to training deep neural networks. If the $w$ parameters are small then they will get smaller, if they are initialized to greater than 1 then the composition will be too large. In both cases, the learning becomes slower.
+A solution is to carefully initialize the training parameters $w$.
+\newline
+\textbf{Weight Initialization for Deep Networks}
+\newline
+\textbf{Numerical approximation of gradients}
+\newline
+\textbf{Gradient checking}
+\newline
+\textbf{Gradient Checking Implementation Notes}
+
+\subsubsection*{QUIZ - Practical aspects of deep learning}
+\textbf{1.} If you have 10,000,000 examples, how would you split the train/dev/test set?
+\begin{itemize}
+    \item 98\% train . 1\% dev . 1\% test (X)
+    \item 33\% train . 33\% dev . 33\% test
+    \item 60\% train . 20\% dev . 20\% test
+\end{itemize}
+\textbf{2.} The dev and test set should:
+\begin{itemize}
+    \item Come from the same distribution (X)
+    \item Come from different distributions
+    \item Be identical to each other (same (x,y) pairs)
+    \item Have the same number of examples
+\end{itemize}
+\textbf{3.} If your Neural Network model seems to have high variance, what of the following would be promising things to try?
+\begin{itemize}
+    \item Make the Neural Network deeper
+    \item Get more training data (X)
+    \item Get more test data
+    \item Add regularization (X)
+    \item Increase the number of units in each hidden layer
+\end{itemize}
+\textbf{4.} You are working on an automated check-out kiosk for a supermarket, and are building a classifier for apples, bananas and oranges. Suppose your classifier obtains a training set error of 0.5\%, and a dev set error of 7\%. Which of the following are promising things to try to improve your classifier? (Check all that apply.)
+\begin{itemize}
+    \item Increase the regularization parameter lambda (X)
+    \item Decrease the regularization parameter lambda
+    \item Get more training data (X)
+    \item Use a bigger neural network
+\end{itemize}
+\textbf{5.} What is weight decay?
+\begin{itemize}
+    \item The process of gradually decreasing the learning rate during training.
+    \item A regularization technique (such as L2 regularization) that results in gradient descent shrinking the weights on every iteration. (X)
+    \item Gradual corruption of the weights in the neural network if it is trained on noisy data.
+    \item A technique to avoid vanishing gradient by imposing a ceiling on the values of the weights.
+\end{itemize}
+\textbf{6.} What happens when you increase the regularization hyperparameter lambda?
+\begin{itemize}
+    \item Weights are pushed toward becoming smaller (closer to 0) (X)
+    \item Weights are pushed toward becoming bigger (further from 0)
+    \item Doubling lambda should roughly result in doubling the weights
+    \item Gradient descent taking bigger steps with each iteration (proportional to lambda)
+\end{itemize}
+\textbf{7.} With the inverted dropout technique, at test time:
+\begin{itemize}
+    \item You apply dropout (randomly eliminating units) and do not keep the $\frac{1}{keep\_prob}$ factor in the calculations used in training
+    \item You do not apply dropout (do not randomly eliminate units), but keep the $\frac{1}{keep\_prob}$ factor in the calculations used in training.
+    \item You apply dropout (randomly eliminating units) but keep the $\frac{1}{keep\_prob}$ factor in the calculations used in training.
+    \item You do not apply dropout (do not randomly eliminate units) and do not keep the $\frac{1}{keep\_prob}$ factor in the calculations used in training (X)
+\end{itemize}
+\textbf{8.} Increasing the parameter keep\_prob from (say) 0.5 to 0.6 will likely cause the following: (Check the two that apply)
+\begin{itemize}
+    \item Increasing the regularization effect (X)
+    \item Reducing the regularization effect
+    \item Causing the neural network to end up with a higher training set error (X)
+    \item Causing the neural network to end up with a lower training set error
+\end{itemize}
+\textbf{9.} Which of these techniques are useful for reducing variance (reducing overfitting)? (Check all that apply.)
+\begin{itemize}
+    \item Exploding gradient
+    \item Dropout (X)
+    \item Xavier initialization
+    \item L2 regularization (X)
+    \item Vanishing gradient
+    \item Data augmentation (X)
+    \item Gradient Checking
+\end{itemize}
+\textbf{10.} Why do we normalize the inputs xx?
+\begin{itemize}
+    \item It makes it easier to visualize the data
+    \item It makes the cost function faster to optimize (X)
+    \item It makes the parameter initialization faster
+    \item Normalization is another word for regularization--It helps to reduce variance
+\end{itemize}

@@ -1,0 +1,139 @@
+\section*{Week 2}
+\subsection*{Optimization algorithms}
+Algorithms to speedup Gradient Descent:
+\begin{itemize}
+    \item Mini-Batch Gradient Descent
+    \item Gradient Descent with Momentum
+    \item RMSprop: Root Mean Square prop
+    \item Adam optimization algorithm (Adaptive Moment Estimation)
+\end{itemize}
+
+\subsubsection*{Exponentially weighted averages}
+The formulas has an $\beta$ as hyperparameters, $\theta_t$ temperature at day $t$, and $V_{t-1}$ the average at day $t-1$:
+\begin{equation}
+    V_t = \beta * V_{t-1} + (1 - \beta) * \theta_t
+\end{equation}
+$V_t$ is approximatively averaged over last $\frac{1}{1 - \beta}$ days. If we set $\beta$ to
+\begin{itemize}
+    \item $0.9$ then the average is over 10 days. 
+    \item $0.98$ the average is over 50 days and plot will be very smoothed to the right
+    \item $0.5$ then average over 2 days, and graph will adapt to current temperature
+\end{itemize}
+\textbf{Bias correction}
+\begin{equation}
+    V^{corrected}_t = \frac{V_t}{1 - \beta^t}
+\end{equation}
+
+\subsubsection*{Gradient descent with momentum}
+\textbf{Momentum}, or Gradient descent with Momentum is almost always faster than the standard gradient descent algorithm. The basic idea is to compute an exponentially weighted average of your gradients, and then use that gradient to update your weights instead.
+\newline
+Implementation details, Hyperparameters $\alpha$ and $\beta$ (most common value is $0.9$, i.e. averaging over 10 days/iterations): 
+
+\begin{lstlisting}
+On iteration t:
+  Compute dW, db on the current mini-batch
+  v_{dW} = \beta v_{dW} + (1 - \beta) dW
+  v_{db} = \beta v_{db} + (1 - \beta) db
+  W = W - \alpha v_{dw}, b = b - \alpha v_{db}
+\end{lstlisting}
+
+\subsubsection*{RMSprop}
+The intuition about how this works. Recall that in the horizontal direction (i.e. the $W$ direction) we want learning to go pretty fast. Whereas in the vertical direction (i.e the $b$ direction), we want to slow down all the oscillations into the vertical direction.
+
+So with this terms $SdW$ an $Sdb$, we want $SdW$ to be relatively small, so that here we're dividing by relatively small number. Whereas $Sdb$ will be relatively large, so that here we're dividing $yt$ relatively large number in order to slow down the updates on a vertical dimension.
+
+\subsubsection*{Adam optimization algorithm}
+A combination of \textbf{Momentum} and \textbf{RMSprop}.
+
+\subsubsection*{Learning rate decay}
+\begin{equation}
+    \alpha = \frac{1}{1 + decay\_rate * epoch\_num} \alpha_0
+\end{equation}
+Other learning rate decay methods:
+
+\subsubsection*{The problem of local optima}
+In very high-dimensional spaces you're actually much more likely to run into a \textbf{saddle point} (like horse saddle) then the local optimum.
+
+So it is unlikely to get stuck in a bad local optima. On the other hand, Plateaus can make learning slow. Algorithms like \textbf{Learning rate decay} can help avoiding getting stuck in plateaus.
+
+\subsubsection*{QUIZ - Optimization algorithms}
+\textbf{1.} Which notation would you use to denote the 3rd layer’s activations when the input is the 7th example from the 8th minibatch?
+\begin{itemize}
+    \item $a^{[3]\{7\}(8)}$
+    \item $a^{[8]\{7\}(3)}$
+    \item $a^{[8]\{3\}(7)}$
+    \item $a^{[3]\{8\}(7)}$ (X)
+\end{itemize}
+\textbf{2.} Which of these statements about mini-batch gradient descent do you agree with?
+\begin{itemize}
+    \item Training one epoch (one pass through the training set) using mini-batch gradient descent is faster than training one epoch using batch gradient descent.
+    \item You should implement mini-batch gradient descent without an explicit for-loop over different mini-batches, so that the algorithm processes all mini-batches at the same time (vectorization).
+    \item One iteration of mini-batch gradient descent (computing on a single mini-batch) is faster than one iteration of batch gradient descent. (X)
+\end{itemize}
+\textbf{3.} Why is the best mini-batch size usually not 1 and not m, but instead something in-between?
+\begin{itemize}
+    \item If the mini-batch size is m, you end up with stochastic gradient descent, which is usually slower than mini-batch gradient descent.
+    \item If the mini-batch size is 1, you end up having to process the entire training set before making any progress.
+    \item If the mini-batch size is 1, you lose the benefits of vectorization across examples in the mini-batch. (X)
+    \item If the mini-batch size is m, you end up with batch gradient descent, which has to process the whole training set before making progress. (X)
+\end{itemize}
+\textbf{4.} Suppose your learning algorithm’s cost JJ, plotted as a function of the number of iterations, looks like this:
+Which of the following do you agree with?
+\begin{itemize}
+    \item If you’re using mini-batch gradient descent, something is wrong. But if you’re using batch gradient descent, this looks acceptable.
+    \item Whether you’re using batch gradient descent or mini-batch gradient descent, something is wrong.
+    \item Whether you’re using batch gradient descent or mini-batch gradient descent, this looks acceptable.
+    \item If you’re using mini-batch gradient descent, this looks acceptable. But if you’re using batch gradient descent, something is wrong. (X)
+\end{itemize}
+\textbf{5.} Suppose the temperature in Casablanca over the first three days of January are the same: 
+
+Jan 1st: $\theta_1 = 10^o C$
+Jan 2nd: $\theta_2 10^o C$
+
+(We used Fahrenheit in lecture, so will use Celsius here in honor of the metric world.)
+
+Say you use an exponentially weighted average with $\beta = 0.5$ to track the temperature: $v_0 = 0$, $v_t = \beta v_{t-1} +(1-\beta)\theta_t$. If $v_2$ is the value computed after day 2 without bias correction, and $v_2^{corrected}$ is the value you compute with bias correction. What are these values? (You might be able to do this without a calculator, but you don't actually need one. Remember what is bias correction doing.)
+\begin{itemize}
+    \item $v_2 = 10$, $v_2^{corrected} = 7.5$
+    \item $v_2 = 10$, $v_2^{corrected} = 10$
+    \item $v_2 = 7.5$, $v_2^{corrected} = 10$ (X)
+    \item $v_2 = 7.5$, $v_2^{corrected} = 7.5$
+\end{itemize}
+\textbf{6.} Which of these is NOT a good learning rate decay scheme? Here, t is the epoch number.
+\begin{itemize}
+    \item $\alpha = \frac{1}{1+2*t} \alpha_0$
+    \item $\alpha = \frac{1}{\sqrt{t}} \alpha_0$
+    \item $\alpha = 0.95^t \alpha_0$
+    \item $\alpha = e^t \alpha_0$ (X)
+\end{itemize}
+\textbf{7.} You use an exponentially weighted average on the London temperature dataset. You use the following to track the temperature: $v_{t} = \beta v_{t-1} + (1-\beta)\theta_t$. The red line below was computed using $\beta = 0.9$. What would happen to your red curve as you vary $\beta$? (Check the two that apply)
+\begin{itemize}
+    \item Decreasing $\beta$ will shift the red line slightly to the right.
+    \item Increasing $\beta$ will shift the red line slightly to the right. (X)
+    \item Decreasing $\beta$ will create more oscillation within the red line. (X)
+    \item Increasing $\beta$ will create more oscillations within the red line.
+\end{itemize}
+\textbf{8.} Consider this figure:
+
+These plots were generated with gradient descent; with gradient descent with momentum ($\beta = 0.5$) and gradient descent with momentum ($\beta = 0.9$). Which curve corresponds to which algorithm?
+\begin{itemize}
+    \item (1) is gradient descent. (2) is gradient descent with momentum (small $\beta$). (3) is gradient descent with momentum (large $\beta$) (X)
+    \item (1) is gradient descent with momentum (small $\beta$), (2) is gradient descent with momentum (small $\beta$), (3) is gradient descent
+    \item (1) is gradient descent with momentum (small $\beta$). (2) is gradient descent. (3) is gradient descent with momentum (large $\beta$)
+    \item (1) is gradient descent. (2) is gradient descent with momentum (large $\beta$) . (3) is gradient descent with momentum (small $\beta$)
+\end{itemize}
+\textbf{9.} Suppose batch gradient descent in a deep network is taking excessively long to find a value of the parameters that achieves a small value for the cost function  $\mathcal{J}(W^{[1]},b^{[1]},..., W^{[L]},b^{[L]})$. Which of the following techniques could help find parameter values that attain a small value for $\mathcal{J}$? (Check all that apply)
+\begin{itemize}
+    \item Try initializing all the weights to zero
+    \item Try mini-batch gradient descent (X)
+    \item Try better random initialization for the weights
+    \item Try tuning the learning rate $\alpha$ (X)
+    \item Try using Adam (X)
+\end{itemize}
+\textbf{10.} Which of the following statements about Adam is False?
+\begin{itemize}
+    \item The learning rate hyperparameter $\alpha$ in Adam usually needs to be tuned.
+    \item Adam combines the advantages of RMSProp and momentum
+    \item Adam should be used with batch gradient computations, not with mini-batches. (X)
+    \item We usually use “default” values for the hyperparameters $\beta_1$, $\beta_2$ and $\varepsilon$ in Adam ($\beta_1 = 0.9$, $\beta_2 = 0.999$, $\varepsilon = 10^{-8}$
+\end{itemize}

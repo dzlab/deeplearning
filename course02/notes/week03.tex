@@ -1,0 +1,186 @@
+\section*{Week 3}
+\subsection*{Hyperparameter tuning, Batch Normalization and Programming Frameworks}
+
+\subsubsection*{Hyperparameter tuning}
+\textbf{Tuning process} some hyperparameters are more important than others, e.g. (alpha vs the rest). The two key takeaways are, use random sampling and adequate search and optionally consider implementing a coarse to fine search process.
+
+
+\textbf{Using an appropriate scale to pick hyperparameters}
+It seems a bad idea to search for the hyperparameters in a linear scale, but more reasonable to search on a log scale. Where instead of using a linear scale, you'd have 0.0001 here, and then 0.001, 0.01, 0.1, and then 1. And you instead sample uniformly, at random, on this type of logarithmic scale. Now you have more resources dedicated to searching between 0.0001 and 0.001, and between 0.001 and 0.01, and so on. 
+In python, it can be done as follows:
+
+\begin{lstlisting}
+r = -4 * np.random.rand() // r in [-4, 0]
+alpha = 10^r // randomly sampled 
+\end{lstlisting}
+
+\textbf{Hyperparameters tuning in practice: Pandas vs. Caviar} panda: babysitting the model once at a time, or trying many models in parallel then picking the best one.
+
+\subsubsection*{Normalizing activations in a network}
+\textbf{Normalizing activations in a network} normalize the hidden layer values as calculating the identity functions so instead of using $Z^{[l](i)}$ use $\tilde{Z^{[l](i)}}$ in future calculations. Where the later is calculated as follows:
+
+\begin{equation*}
+    \mu = \frac{1}{m} \sum_{i} Z^{(i)} 
+\end{equation*}
+\begin{equation*}
+    \sigma^2 = \frac{1}{m} \sum_{i} (Z_{i} - \mu)^2 
+\end{equation*}
+\begin{equation*}
+    Z^{(i)}_{norm} = \frac{Z^{(i)} - \mu}{\sqrt{\sigma^2 + \epsilon}}
+\end{equation*}
+\begin{equation*}
+\tilde{Z^{(i)}} = \gamma Z^{(i)}_{norm} + \beta
+\end{equation*}
+$\alpha$ and $\beta$ are learnable parameters of model.
+
+\textbf{Fitting Batch Norm into a neural network}
+
+\textbf{Why does Batch Norm work?}
+
+\textbf{Batch Norm at test time}
+
+\subsubsection*{Multi-class classification}
+
+\textbf{Softmax Regression} A generalization of the Logistic regression with more than two output classes. The unusual thing about the Softmax activation function is, because it needs to normalized across the different possible outputs, and needs to take a vector and puts in outputs of vector. 
+
+\textbf{Training a softmax classifier} You have to only implement forward propagation, tensorflow will know how to calculate derivities and perform backpropagation:
+\begin{lstlisting}
+import numpy as np
+import tensorflow as tf
+
+# declare a parameter as a tensorflow variable
+w = tf.Variable(0, dtype=tf.float32)
+# declare the cost function that needs to be optimized
+cost = tf.add(tf.add(w**2, tf.multiply(-10., w)), 25)
+# define the training algorithm to be used,
+# Gradient Descent (set the learning rate) with objective to minimize the cost
+train = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+
+init = tf.global_variables_initilizer()
+# create tensorflow session
+session = tf.Session()
+session.run(init)
+# at this moment nothing is run yet, so w is 0.0
+print(session.run(w))
+
+# run one step of Gradient Descent training
+session.run()
+print(session.run(w))
+
+# run 1000 steps of Gradient Descent
+for i in range(1000):
+    session.run(train)
+# now w should be close to 5 (which is the optimum)
+print(session.run(w))
+\end{lstlisting}
+
+In the previous example, we were trying to minimize a fix function of w. The followning example shows how to get training data into tensor flow
+\begin{lstlisting}
+import numpy as np
+import tensorflow as tf
+
+coefficient = np.array([[1.], [-10.], [25.]])
+# declare a parameter as a tensorflow variable
+w = tf.Variable(0, dtype=tf.float32)
+x = tf.placehoder(tf.float32, [3, 1])
+# declare the cost function that needs to be optimized
+# replace cost = w**2 - 10 *w + 25 with
+cost = x[0][0] * w ** 2 + x[1][0] * w + x[2][0]
+# define the training algorithm to be used, 
+# Gradient Descent (set the learning rate) with objective to minimize the cost
+train = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+
+init = tf.global_variables_initilizer()
+# create tensorflow session
+session = tf.Session()
+session.run(init)
+# at this moment nothing is run yet, so w is 0.0
+print(session.run(w))
+
+# run one step of Gradient Descent training
+session.run(train, feed_dict={x: coefficients})
+print(session.run(w))
+
+# run 1000 steps of Gradient Descent
+for i in range(1000):
+    session.run(train)
+# now w should be close to 5 (which is the optimum)
+print(session.run(w))
+\end{lstlisting}
+
+\subsubsection*{Introduction to programming frameworks}
+
+\textbf{Deep learning frameworks} Criteria for choosing a framework:
+\begin{itemize}
+    \item ease of programming (development and deployment)
+    \item running speed on large NN
+    \item Truly open (open source with good governance), some companies govern an open source framework then gradually close the source in the future
+\end{itemize}
+\textbf{TensorFlow}
+
+
+\subsubsection*{QUIZ - Hyperparameter tuning, Batch Normalization, Programming Frameworks}
+\textbf{1.} If searching among a large number of hyperparameters, you should try values in a grid rather than random values, so that you can carry out the search more systematically and not rely on chance. True or False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{2.} Every hyperparameter, if set poorly, can have a huge negative impact on training, and so all hyperparameters are about equally important to tune well. True or False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{3.} During hyperparameter search, whether you try to babysit one model (“Panda” strategy) or train a lot of models in parallel (“Caviar”) is largely determined by:
+\begin{itemize}
+    \item Whether you use batch or mini-batch optimization
+    \item The presence of local minima (and saddle points) in your neural network
+    \item The amount of computational power you can access (X)
+    \item The number of hyperparameters you have to tune
+\end{itemize}
+\textbf{4.} If you think $\beta$ (hyperparameter for momentum) is between on 0.9 and 0.99, which of the following is the recommended way to sample a value for beta?
+\begin{itemize}
+    \item $r = np.random.rand(), beta = r*0.09 + 0.9 $
+    \item $r = np.random.rand(), beta = 1-10**(- r - 1)$ (X)
+    \item $r = np.random.rand(), beta = 1-10**(- r + 1)$
+    \item $r = np.random.rand(), beta = r*0.9 + 0.09 $
+\end{itemize}
+\textbf{5.} Finding good hyperparameter values is very time-consuming. So typically you should do it once at the start of the project, and try to find very good hyperparameters so that you don’t ever have to revisit tuning them again. True or false?
+\begin{itemize}
+    \item True (X)
+    \item False
+\end{itemize}
+\textbf{6.} In batch normalization as presented in the videos, if you apply it on the llth layer of your neural network, what are you normalizing?
+\begin{itemize}
+    \item $a^{[l]}$
+    \item $W^{[l]}$
+    \item $b^{[l]}$
+    \item $z^{[l]}$ (X) 
+\end{itemize}
+\textbf{7.} In the normalization formula $z_{norm}^{(i)} = \frac{z^{(i)} - \mu}{\sqrt{\sigma^2 + \varepsilon}}$, why do we use epsilon?
+\begin{itemize}
+    \item To avoid division by zero (X)
+    \item In case $\mu$ is too small
+    \item To speed up convergence
+    \item To have a more accurate normalization
+\end{itemize}
+\textbf{8.} Which of the following statements about $\gamma$ and $\beta$ in Batch Norm are true?
+\begin{itemize}
+    \item They can be learned using Adam, Gradient descent with momentum, or RMSprop, not just with gradient descent. (X)
+    \item They set the mean and variance of the linear variable $z^[l]$ of a given layer. (X)
+    \item There is one global value of $\gamma \in \Re$ and one global value of $\beta \in \Re$ for each layer, and applies to all the hidden units in that layer.
+    \item The optimal values are $\gamma = \sqrt{\sigma^2 + \varepsilon}$, and $\beta = \mu$.
+    \item $\beta$ and $\gamma$ are hyperparameters of the algorithm, which we tune via random sampling.
+\end{itemize}
+\textbf{9.} After training a neural network with Batch Norm, at test time, to evaluate the neural network on a new example you should:
+\begin{itemize}
+    \item Perform the needed normalizations, use $\mu$ and $\sigma^2$ estimated using an exponentially weighted average across mini-batches seen during training.
+    \item Skip the step where you normalize using $\mu$ and $\sigma^2$ since a single test example cannot be normalized.
+    \item Use the most recent mini-batch’s value of $\mu$ and $\sigma^2$ to perform the needed normalizations. (X)
+    \item If you implemented Batch Norm on mini-batches of (say) 256 examples, then to evaluate on one test example, duplicate that example 256 times so that you’re working with a mini-batch the same size as during training.
+\end{itemize}
+\textbf{10.} Which of these statements about deep learning programming frameworks are true? (Check all that apply)
+\begin{itemize}
+    \item Deep learning programming frameworks require cloud-based machines to run.
+    \item Even if a project is currently open source, good governance of the project helps ensure that the it remains open even in the long term, rather than become closed or modified to benefit only one company. (X)
+    \item A programming framework allows you to code up deep learning algorithms with typically fewer lines of code than a lower-level language such as Python. (X)
+\end{itemize}
