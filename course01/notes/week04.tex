@@ -1,0 +1,233 @@
+\section*{Week 4}
+\subsection*{Deep Neural Network}
+
+\subsubsection*{Getting your matrix dimensions right}
+\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+    \tikzstyle{every pin edge}=[<-,shorten <=1pt]
+    \tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
+    \tikzstyle{input neuron}=[neuron, fill=green!50];
+    \tikzstyle{output neuron}=[neuron, fill=red!50];
+    \tikzstyle{hidden neuron_1}=[neuron, fill=blue!50];
+    \tikzstyle{hidden neuron_2}=[neuron, fill=blue!50];
+    \tikzstyle{hidden neuron_3}=[neuron, fill=blue!50];
+    \tikzstyle{hidden neuron_4}=[neuron, fill=blue!50];
+    \tikzstyle{annot} = [text width=4em, text centered]
+
+    % Draw the input layer nodes
+    \foreach \name / \y in {1,...,2}
+    % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+        \node[input neuron, pin=left:Input \#\y] (I-\name) at (0,-\y) {};
+
+    % Draw the hidden layer (1) nodes
+    \foreach \name / \y in {1,...,3}
+        \path[yshift=0.5cm]
+            node[hidden neuron_1] (H1-\name) at (\layersep,-\y cm) {};
+
+    % Draw the hidden layer nodes
+    \foreach \name / \y in {1,...,5}
+        \path[yshift=0.5cm]
+            node[hidden neuron_2] (H2-\name) at (2*\layersep,-\y cm) {};
+
+    % Draw the hidden layer nodes
+    \foreach \name / \y in {1,...,4}
+        \path[yshift=0.5cm]
+            node[hidden neuron_3] (H3-\name) at (3*\layersep,-\y cm) {};
+
+    % Draw the hidden layer nodes
+    \foreach \name / \y in {1,...,2}
+        \path[yshift=0.5cm]
+            node[hidden neuron_4] (H4-\name) at (4*\layersep,-\y cm) {};
+
+    % Draw the output layer node
+    \node[output neuron,pin={[pin edge={->}]right:Output}, right of=H4-2] (O) {};
+
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1,...,2}
+        \foreach \dest in {1,...,3}
+            \path (I-\source) edge (H1-\dest);
+
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1,...,3}
+        \foreach \dest in {1,...,5}
+            \path (H1-\source) edge (H2-\dest);
+
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1,...,5}
+        \foreach \dest in {1,...,4}
+            \path (H2-\source) edge (H3-\dest);
+
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1,...,4}
+        \foreach \dest in {1,...,2}
+            \path (H3-\source) edge (H4-\dest);
+
+    % Connect every node in the hidden layer with the output layer
+    \foreach \source in {1,...,2}
+        \path (H4-\source) edge (O);
+
+    % Annotate the layers
+    \node[annot,above of=H1-1, node distance=1cm] (hl) {Hidden layer 1};
+    \node[annot,above of=H2-1, node distance=1cm] (h2) {Hidden layer 2};
+    \node[annot,above of=H3-1, node distance=1cm] (h3) {Hidden layer 3};
+    \node[annot,above of=H4-1, node distance=1cm] (h4) {Hidden layer 4};
+    \node[annot,left of=hl] {Input layer};
+    \node[annot,right of=h4] {Output layer};
+\end{tikzpicture}
+% End of code
+
+With $l$ denoting the layer number, $n^{[l]}$ the number of nodes at layer $l$:
+
+\begin{equation}
+    Z^{[l]} = W^{[l]} * A^{[l-1]} + b^{[l]}
+\end{equation}
+The dimensions of the matrices $W$ and $b$ for one sample are:
+\begin{equation}
+    W^{[l]} : (n^{[l]}, n^{[l-1]})
+\end{equation}
+\begin{equation}
+    b^{[l]} : (n^{[l]}, 1)
+\end{equation}
+For $m$ samples:
+\begin{equation}
+    Z^{[l]} : (n^{[l]}, m)
+\end{equation}
+\begin{equation}
+    A^{[l-1]} : (n^{[l-1]}, m)
+\end{equation}
+\begin{equation}
+    b^{[l]} : (n^{[l]}, 1)
+\end{equation}
+
+\subsubsection*{Backward propagation for layer l}
+
+Input $da^{[l]}$
+Output $da^{[l-1]}, dW^{[l]}, db^{[l]}$
+Then
+\begin{equation}
+dz^{[l]} = da^{[l]} * g^{[l]'}(z^{[l]})
+\end{equation}
+\begin{equation}
+dw^{[l]} = dz^{[l]} * a^{[l-1]}
+\end{equation}
+\begin{equation}
+db^{[l]} = dz^{[l]}
+\end{equation}
+\begin{equation}
+da^{[l-1]} = W^{[l]T} dz^{[l]}
+\end{equation}
+Then $dz^{[l]}$ becomes
+\begin{equation}
+dz^{[l]} = w^{[l+1]T} dz^{[l+1]} * g^{[l]'}(z^{[l]})
+\end{equation}
+The vectorized version will looks like:
+\begin{equation}
+dZ^{[l]} = dA^{[l]} * g^{[l]'}(Z^{[l]})
+\end{equation}
+\begin{equation}
+dW^{[l]} = \frac{1}{m} dZ^{[l]} . A^{[l-1]T}
+\end{equation}
+\begin{equation}
+db^{[l]} = \frac{1}{m} np.sum(dZ^{[l]}, axis = 1, keepdims = True)
+\end{equation}
+\begin{equation}
+dA^{[l-1]} = W^{[l]T} . dZ^{[l]}
+\end{equation}
+
+
+\subsubsection*{What are hyperparameters?}
+
+Parameters: $W^{[1]}, b^{[1]}, W^{[2]}, b^{[2]}, W^{[3]}, b^{[3]} ...$
+Hyperparameters: paramters that determines the raw parameters above
+\begin{itemize}
+    \item learning rate $\alpha$
+    \item number of iterations
+    \item number of hidden layers L
+    \item number of hidden units $n^{[1]}, n^{[2]}, ...$
+    \item choice of activation layers
+\end{itemize}
+
+Later more hyperprameters: Momentum, mini-batch size, regulations
+
+
+\subsubsection*{QUIZ - Key concepts on Deep Neural Networks}
+\textbf{1.} What is the "cache" used for in our implementation of forward propagation and backward propagation?
+\begin{itemize}
+    \item We use it to pass variables computed during forward propagation to the corresponding backward propagation step. It contains useful values for backward propagation to compute derivatives. (X)
+    \item We use it to pass variables computed during backward propagation to the corresponding forward propagation step. It contains useful values for forward propagation to compute activations.
+    \item It is used to cache the intermediate values of the cost function during training.
+    \item It is used to keep track of the hyperparameters that we are searching over, to speed up computation.
+\end{itemize}
+\textbf{2.} Among the following, which ones are "hyperparameters"? (Check all that apply.)
+\begin{itemize}
+    \item number of iterations (X)
+    \item activation values $a^{[l]}$
+    \item number of layers LL in the neural network (X)
+    \item weight matrices $W^{[l]}$
+    \item size of the hidden layers $n^{[l]}$ (X)
+    \item bias vectors $b^{[l]}$
+    \item learning rate $\alpha$ (X)
+\end{itemize}
+\textbf{3.} Which of the following statements is true?
+\begin{itemize}
+    \item The deeper layers of a neural network are typically computing more complex features of the input than the earlier layers. (X)
+    \item The earlier layers of a neural network are typically computing more complex features of the input than the deeper layers.
+\end{itemize}
+\textbf{4.} Vectorization allows you to compute forward propagation in an LL-layer neural network without an explicit for-loop (or any other explicit iterative loop) over the layers l=1, 2, …,L. True/False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{5.} Assume we store the values for $n^{[l]}$ in an array called layers, as follows: $layer_dims = [n_x, 4,3,2,1]$. So layer 1 has four hidden units, layer 2 has 3 hidden units and so on. Which of the following for-loops will allow you to initialize the parameters for the model?
+\begin{lstlisting}
+for(i in range(1, len(layer_dims))):
+  parameter['W' + str(i)] = np.random.randn(layers[i], layers[i-1])) * 0.01
+  parameter['b' + str(i)] = np.random.randn(layers[i], 1) * 0.01
+\end{lstlisting}
+\textbf{6.} Consider the following neural network.
+
+How many layers does this network have?
+\begin{itemize}
+    \item The number of layers LL is 4. The number of hidden layers is 3. (X)
+    \item The number of layers LL is 3. The number of hidden layers is 3.
+    \item The number of layers LL is 4. The number of hidden layers is 4.
+    \item The number of layers LL is 5. The number of hidden layers is 4.
+\end{itemize}
+\textbf{7.} During forward propagation, in the forward function for a layer ll you need to know what is the activation function in a layer (Sigmoid, tanh, ReLU, etc.). During backpropagation, the corresponding backward function also needs to know what is the activation function for layer ll, since the gradient depends on it. True/False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{8.} There are certain functions with the following properties:
+
+(i) To compute the function using a shallow network circuit, you will need a large network (where we measure size by the number of logic gates in the network), but (ii) To compute it using a deep network circuit, you need only an exponentially smaller network. True/False?
+\begin{itemize}
+    \item True (X)
+    \item False
+\end{itemize}
+\textbf{9.} Consider the following 2 hidden layer neural network:
+Which of the following statements are True? (Check all that apply).
+\begin{itemize}
+    \item $W^{[1]}$ will have shape (4, 4) (X)
+    \item $b^{[1]}$ will have shape (4, 1) (X)
+    \item $W^{[1]}$ will have shape (3, 4)
+    \item $b^{[1]}$ will have shape (3, 1)
+    \item $W^{[2]}$ will have shape (3, 4) (X)
+    \item $b^{[2]}$ will have shape (1, 1)
+    \item $W^{[2]}$ will have shape (3, 1)
+    \item $b^{[2]}$ will have shape (3, 1) (X)
+    \item $W^{[3]}$ will have shape (3, 1)
+    \item $b^{[3]}$ will have shape (1, 1) (X)
+    \item $W^{[3]}$ will have shape (1, 3) (X)
+    \item $b^{[3]}$ will have shape (3, 1)
+\end{itemize}
+\textbf{10.} Whereas the previous question used a specific network, in the general case what is the dimension of $W^{[l]}$, the weight matrix associated with layer ll?
+\begin{itemize}
+    \item $W^{[l]}$ has shape $(n^{[l]}, n^{[l-1]})$ (X)
+    \item $W^{[l]}$ has shape $(n^{[l]}, n^{[l+1]})$
+    \item $W^{[l]}$ has shape $(n^{[l-1]}, n^{[l]})$
+    \item $W^{[l]}$ has shape $(n^{[l+1]}, n^{[l]})$
+\end{itemize}

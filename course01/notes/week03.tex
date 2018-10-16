@@ -1,0 +1,105 @@
+\section*{Week 3}
+\subsection*{Shallow neural networks}
+
+\subsubsection*{Activation functions}
+Never use a \textbf{Sigmoid} function as the \textbf{tanh} $tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$ is also superior.
+
+Another good activation function is the \textbf{LeRU} and the \textbf{leacky LeRU}
+
+\subsubsection*{Why do you need non-linear activation functions?}
+Using a linear activation function (i.e. $g(z) = z$) is useless as it turns out the NN into a linear regression. As a composition of functions is also a function.
+
+Having a hidden layer using linear activation and an output layer using a sigmoid function, then the NN ends up a logistic regression.
+
+The only case where using a linear activation function may be usefull is when at the output layer in the case where $y \in R$ (e.g. when predicting the housing prices).
+
+
+\subsubsection*{Random Initialization}
+Initial $w^{[i]}$ to a random array, otherwise all the nodes of the $i$th layer will be computing the same function. Then, multiply it by a a very small number to avoid an initialization that's very large which causes saturation and very slow learning. It's OK for $b$ to be initialized to zero.
+
+\begin{lstlisting}
+w^{[1]} = np.random.randn((2, 2)) * 0.01
+b^{[1]} = np.zeros((2, 1))
+\end{lstlisting}
+
+\subsubsection*{QUIZ - Shallow Neural Networks}
+\textbf{1.} Which of the following are true? (Check all that apply.)
+\begin{itemize}
+    \item $a^{[2]}_4$ is the activation output by the $4^{th}$ neuron of the $2^{nd}$ layer (X)
+    \item $X$ is a matrix in which each row is one training example.
+    \item $a^{[2]}$ denotes the activation vector of the $2^{nd}$ layer. (X)
+    \item $a^{[2](12)}$ denotes activation vector of the $12^{th}$ layer on the $2^{nd}$ training example.
+    \item $a^{[2]}_4$ is the activation output of the $2^{nd}$ layer for the $4^{th}$ training example
+    \item $a^{[2](12)}$ denotes the activation vector of the $2^{nd}$ layer for the $12^{th}$ training example. (X)
+    \item $X$ is a matrix in which each column is one training example. (X)
+\end{itemize}
+\textbf{2.} The tanh activation usually works better than sigmoid activation function for hidden units because the mean of its output is closer to zero, and so it centers the data better for the next layer. True/False?
+\begin{itemize}
+    \item True (X)
+    \item False
+\end{itemize}
+\textbf{3.} Which of these is a correct vectorized implementation of forward propagation for layer ll, where $1 \leq l \leq L$?
+\begin{itemize}
+    \item $Z^{[l]} = W^{[l]} A^{[l]}+ b^{[l]}$ $A^{[l+1]} = g^{[l]}(Z^{[l]})$
+    \item $Z^{[l]} = W^{[l-1]} A^{[l]}+ b^{[l-1]}$ $A^{[l]} = g^{[l]}(Z^{[l]})$
+    \item $Z^{[l]} = W^{[l]} A^{[l-1]}+ b^{[l]}$ $A^{[l]} = g^{[l]}(Z^{[l]})$ (X)
+    \item $Z^{[l]} = W^{[l]} A^{[l]}+ b^{[l]}$ $A^{[l+1]} = g^{[l+1]}(Z^{[l]})$
+\end{itemize}
+\textbf{4.} You are building a binary classifier for recognizing cucumbers (y=1) vs. watermelons (y=0). Which one of these activation functions would you recommend using for the output layer?
+\begin{itemize}
+    \item ReLU
+    \item Leaky ReLU
+    \item sigmoid (X)
+    \item tanh
+\end{itemize}
+\textbf{5.} Consider the following code:
+\begin{lstlisting}
+A = np.random.randn(4,3)
+B = np.sum(A, axis = 1, keepdims = True)
+\end{lstlisting}
+What will be B.shape? (If you’re not sure, feel free to run this in python to find out).
+\begin{itemize}
+    \item (, 3)
+    \item (4, 1) (X)
+    \item (1, 3)
+    \item (4, )
+\end{itemize}
+\textbf{6.} Suppose you have built a neural network. You decide to initialize the weights and biases to be zero. Which of the following statements is true?
+\begin{itemize}
+    \item Each neuron in the first hidden layer will perform the same computation. So even after multiple iterations of gradient descent each neuron in the layer will be computing the same thing as other neurons. (X)
+    \item Each neuron in the first hidden layer will perform the same computation in the first iteration. But after one iteration of gradient descent they will learn to compute different things because we have “broken symmetry”.
+    \item Each neuron in the first hidden layer will compute the same thing, but neurons in different layers will compute different things, thus we have accomplished “symmetry breaking” as described in lecture.
+    \item The first hidden layer’s neurons will perform different computations from each other even in the first iteration; their parameters will thus keep evolving in their own way.
+\end{itemize}
+\textbf{7.} Logistic regression’s weights w should be initialized randomly rather than to all zeros, because if you initialize to all zeros, then logistic regression will fail to learn a useful decision boundary because it will fail to “break symmetry”, True/False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{8.} You have built a network using the tanh activation for all the hidden units. You initialize the weights to relative large values, using np.random.randn(..,..)*1000. What will happen?
+\begin{itemize}
+    \item It doesn’t matter. So long as you initialize the weights randomly gradient descent is not affected by whether the weights are large or small.
+    \item This will cause the inputs of the tanh to also be very large, causing the units to be “highly activated” and thus speed up learning compared to if the weights had to start from small values.
+    \item This will cause the inputs of the tanh to also be very large, thus causing gradients to be close to zero. The optimization algorithm will thus become slow. (X)
+    \item This will cause the inputs of the tanh to also be very large, thus causing gradients to also become large. You therefore have to set $\alpha$ to be very small to prevent divergence; this will slow down learning.
+\end{itemize}
+\textbf{9.} Consider the following 1 hidden layer neural network:
+Which of the following statements are True? (Check all that apply).
+\begin{itemize}
+    \item $W^{[1]}$ will have shape (2, 4)
+    \item $b^{[1]}$ will have shape (4, 1) (X)
+    \item $W^{[1]}$ will have shape (4, 2) (X)
+    \item $b^{[1]}$ will have shape (2, 1)
+    \item $W^{[2]}$ will have shape (1, 4) (X)
+    \item $b^{[2]}$ will have shape (4, 1)
+    \item $W^{[2]}$ will have shape (4, 1)
+    \item $b^{[2]}$ will have shape (1, 1) (X)
+\end{itemize}
+\textbf{10.} Question 10
+In the same network as the previous question, what are the dimensions of $Z^{[1]}$ and $A^{[1]}$?
+\begin{itemize}
+    \item $Z^{[1]}$ and $A^{[1]}$ are (4,1)
+    \item $Z^{[1]}$ and $A^{[1]}$ are (4,2)
+    \item $Z^{[1]}$ and $A^{[1]}$ are (4,m) (X)
+    \item $Z^{[1]}$ and $A^{[1]}$ are (1,4)
+\end{itemize}

@@ -1,0 +1,92 @@
+\section*{Week 1}
+\subsection*{What is a neural network?}
+
+
+\textbf{QUIZ} True or false? As explained in this lecture, every input layer feature is interconnected with every hidden layer feature.
+\begin{itemize}
+    \item False
+    \item True (X)
+\end{itemize}
+\textbf{QUIZ} Would structured or unstructured data have features such as pixel values or individual words?
+\begin{itemize}
+    \item Structured data.
+    \item Unstructured data (X)
+\end{itemize}
+
+\subsubsection*{Why is Deep Learning taking off?}
+The scales (large neural network and large data) drives deep learning progress. But also, computation (e.g. GPU) and algorithms.
+Most recent innovations on algorithms are focused on the making NN learn faster. An example is moving the activation function away from the \textbf{Sigmoid} function (which has very slow learning rate at the corners) into a \textbf{ReLU} function that has a positive learning rate on the right side of 0.
+Another important facts related to faster is that building NN is iterative: idea, code, experiment then over again.
+\textbf{QUIZ} What will the variable m denote in this course?
+\begin{itemize}
+    \item Number of hidden layers
+    \item Number of training examples (X)
+    \item The expected output
+    \item Slope
+\end{itemize}
+
+\subsubsection*{QUIZ - Introduction to deep learning}
+\textbf{1.} What does the analogy “AI is the new electricity” refer to?
+\begin{itemize}
+    \item AI runs on computers and is thus powered by electricity, but it is letting computers do things not possible before.
+    \item Similar to electricity starting about 100 years ago, AI is transforming multiple industries. (X)
+    \item AI is powering personal devices in our homes and offices, similar to electricity.
+    \item Through the “smart grid”, AI is delivering a new wave of electricity.
+\end{itemize}
+\textbf{2.} Which of these are reasons for Deep Learning recently taking off? (Check the three options that apply.)
+\begin{itemize}
+    \item We have access to a lot more data. (X)
+    \item Deep learning has resulted in significant improvements in important applications such as online advertising, speech recognition, and image recognition. (X)
+    \item We have access to a lot more computational power. (X)
+    \item Neural Networks are a brand new field.
+\end{itemize}
+\textbf{3.} Recall this diagram of iterating over different ML ideas. Which of the statements below are true? (Check all that apply.)
+\begin{itemize}
+    \item Being able to try out ideas quickly allows deep learning engineers to iterate more quickly. (X)
+    \item Faster computation can help speed up how long a team takes to iterate to a good idea. (X)
+    \item It is faster to train on a big dataset than a small dataset.
+    \item Recent progress in deep learning algorithms has allowed us to train good models faster (even without changing the CPU/GPU hardware). (X)
+\end{itemize}
+\textbf{4.} When an experienced deep learning engineer works on a new problem, they can usually use insight from previous problems to train a good model on the first try, without needing to iterate multiple times through different models. True/False?
+\begin{itemize}
+    \item True (X)
+    \item False
+\end{itemize}
+\textbf{5.} Which one of these plots represents a ReLU activation function?
+\begin{itemize}
+    \item Figure 1:
+    \item Figure 2:
+    \item Figure 3: (X)
+    \item Figure 4:
+\end{itemize}
+\textbf{6.} Images for cat recognition is an example of “structured” data, because it is represented as a structured array in a computer. True/False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{7.} A demographic dataset with statistics on different cities' population, GDP per capita, economic growth is an example of “unstructured” data because it contains data coming from different sources. True/False?
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{8.} Why is an RNN (Recurrent Neural Network) used for machine translation, say translating English to French? (Check all that apply.)
+\begin{itemize}
+    \item It can be trained as a supervised learning problem. (X)
+    \item It is strictly more powerful than a Convolutional Neural Network (CNN).
+    \item It is applicable when the input/output is a sequence (e.g., a sequence of words). (X)
+    \item RNNs represent the recurrent process of Idea->Code->Experiment->Idea->....
+\end{itemize}
+\textbf{9.} In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?
+\begin{itemize}
+    \item x-axis is the amount of data, y-axis (vertical axis) is the performance of the algorithm. (X)
+    \item x-axis is the performance of the algorithm, y-axis (vertical axis) is the amount of data.
+    \item x-axis is the amount of data, y-axis is the size of the model you train.
+    \item x-axis is the input to the algorithm, y-axis is outputs.
+\end{itemize}
+\textbf{10.} Assuming the trends described in the previous question's figure are accurate (and hoping you got the axis labels right), which of the following are true? (Check all that apply.)
+\begin{itemize}
+    \item Decreasing the training set size generally does not hurt an algorithm’s performance, and it may help significantly.
+    \item Increasing the training set size generally does not hurt an algorithm’s performance, and it may help significantly. (X)
+    \item Decreasing the size of a neural network generally does not hurt an algorithm’s performance, and it may help significantly.
+    \item Increasing the size of a neural network generally does not hurt an algorithm’s performance, and it may help significantly. (X)
+\end{itemize}

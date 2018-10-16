@@ -1,0 +1,221 @@
+\section*{Week 2}
+\subsection*{Neural Networks Basics}
+We want a cost function to be convex so that Gradient will find/converge the only minimum.
+
+\textbf{QUIZ} What are the parameters of logistic regression?
+\begin{itemize}
+    \item W, an identity vector, and b, a real number.
+    \item W and b, both $n_x$ dimensional vectors.
+    \item W, an $n_x$ dimensional vector, and b, a real number. (X)
+    \item W and b, both real numbers.
+\end{itemize}
+\textbf{QUIZ} What is the difference between the cost function and the loss function for logistic regression?
+\begin{itemize}
+    \item The loss function computes the error for a single training example; the cost function is the average of the loss functions of the entire training set. (X)
+    \item The cost function computes the error for a single training example; the loss function is the average of the cost functions of the entire training set.
+    \item They are different names for the same function.
+\end{itemize}
+\textbf{QUIZ} True or false. A convex function always has multiple local optima.
+\begin{itemize}
+    \item True
+    \item False (X)
+\end{itemize}
+\textbf{QUIZ} On a straight line, the function's derivative...
+\begin{itemize}
+    \item changes as values on axis increase/decrease.
+    \item doesn't change. (X)
+\end{itemize}
+\textbf{QUIZ} One step of \_\_\_\_\_\_\_\_ propagation on a computation graph yields derivative of final output variable.
+\begin{itemize}
+    \item Forward
+    \item Backward (X)
+\end{itemize}
+\textbf{QUIZ} In this class, what does the coding convention dvar represent?
+\begin{itemize}
+    \item The derivative of input variables with respect to various intermediate quantities.
+    \item The derivative of any variable used in the code.
+    \item The derivative of a final output variable with respect to various intermediate quantities. (X)
+\end{itemize}
+
+\textbf{QUIZ} In this video, what is the simplified formula for the derivative of the losswith respect to z?
+\begin{itemize}
+    \item a / (1-a)
+    \item a (1 - y)
+    \item a - y (X)
+\end{itemize}
+\textbf{QUIZ} In the for loop depicted in the video, why is there only one dw variable (i.e. no i superscripts in the for loop)?
+\begin{itemize}
+    \item Only one derivative is being computed.
+    \item The value of dw in the code is cumulative. (X)
+    \item Only the derivative of one value is relevant.
+\end{itemize}
+J = 0, $dw_1 = 0$, $dw_2 = 0$, db = 0
+
+for i = 1 to m:
+
+  $z^{(i)} = w^T x^{(i)} + b$
+  
+  $a^{(i)} = \sigma(z^{(i)})$
+  
+  $J += - [y^{(i)} \log a^{(i)} + (1 - y^{(i)}) \log (1 - a^{(i)})]$
+  
+  $dz^{(i)} = a^{(i)} + y^{(i)}$
+  
+  $dw_1 += x^{(i)}_1 dz^{(i)}$
+  
+  $dw_2 += x^{(i)}_2 dz^{(i)}$
+  
+  $db += dz^{(i)}$
+  
+J = J/m, $dw_1 = dw_1/m$, $dw_2 = dw_2 / m$, db = db / m
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+for iter in range(1000):
+  Z = w^T X + b = np.dot(w.T, X) + b
+  A = \sigma(Z)
+  dZ = A - Y
+  dw = 1 /m X dZ^T
+  db = 1/m np.sum(dZ)
+  w = w - alpha dw
+  b = b - alpha db
+\end{lstlisting}
+
+\textbf{QUIZ} How do you compute the derivative of b in one line of code in Python numpy?
+\begin{itemize}
+    \item m(np.sum(dz))
+    \item 1 - m(np.sum(dz))
+    \item 1 * m(np.sum(dz))
+    \item 1 / m*(np.sum(dz)) (X)
+\end{itemize}
+
+\subsubsection*{Broadcasting in Python}
+In numpy documentation look for broadcasing. (m, n) metrix +-*/ (1, n) or (m, 1) -> (m, n)
+
+\textbf{QUIZ} Which of the following numpy line of code would sum the values in a matrix A vertically?
+\begin{itemize}
+    \item A.sum(axis )
+    \item A.sum(axis = 1)
+    \item A.sum(axis = 0) (X)
+\end{itemize}
+\textbf{QUIZ} What kind of array has dimensions in this format: (10, ) ?
+\begin{itemize}
+    \item A rank 0 array
+    \item A rank 1 array (X)
+    \item An identity array
+\end{itemize}
+\textbf{QUIZ} True or False: Minimizing the loss corresponds with maximizing $\log p(y|x)$.
+\begin{itemize}
+    \item False
+    \item True (X)
+\end{itemize}
+
+\subsubsection*{QUIZ - Neural Network Basics}
+\textbf{1.} What does a neuron compute?
+\begin{itemize}
+    \item A neuron computes the mean of all features before applying the output to an activation function
+    \item A neuron computes an activation function followed by a linear function (z = Wx + b)
+    \item A neuron computes a linear function (z = Wx + b) followed by an activation function (X)
+    \item A neuron computes a function g that scales the input x linearly (Wx + b)
+\end{itemize}
+\textbf{2.} Which of these is the "Logistic Loss"?
+\begin{itemize}
+    \item $\mathcal{L}^{(i)}(\hat{y}^{(i)}, y^{(i)}) = \mid y^{(i)} - \hat{y}^{(i)} \mid$
+    \item $\mathcal{L}^{(i)}(\hat{y}^{(i)}, y^{(i)}) = max(0, y^{(i)} - \hat{y}^{(i)})$
+    \item $\mathcal{L}^{(i)}(\hat{y}^{(i)}, y^{(i)}) = \mid y^{(i)} - \hat{y}^{(i)} \mid^{2}$
+    \item $\mathcal{L}^{(i)}(\hat{y}^{(i)}, y^{(i)}) = -( y^{(i)}\log(\hat{y}^{(i)}) + (1- y^{(i)})\log(1-\hat{y}^{(i)})$ (X)
+\end{itemize}
+\textbf{3.} Suppose img is a (32,32,3) array, representing a 32x32 image with 3 color channels red, green and blue. How do you reshape this into a column vector?
+\begin{itemize}
+    \item x = img.reshape((32*32*3,1)) (X)
+    \item x = img.reshape((3,32*32))
+    \item x = img.reshape((1,32*32,*3))
+    \item x = img.reshape((32*32,3))
+\end{itemize}
+\textbf{4.} Consider the two following random arrays "a" and "b":
+
+\begin{lstlisting}
+a = np.random.randn(2, 3) # a.shape = (2, 3)
+b = np.random.randn(2, 1) # b.shape = (2, 1)
+c = a + b
+\end{lstlisting}
+What will be the shape of "c"?
+\begin{itemize}
+    \item The computation cannot happen because the sizes don't match. It's going to be "Error"!
+    \item c.shape = (2, 1)
+    \item c.shape = (2, 3) (X)
+    \item c.shape = (3, 2)
+\end{itemize}
+\textbf{5.} Consider the two following random arrays "a" and "b":
+\begin{lstlisting}
+a = np.random.randn(4, 3) # a.shape = (4, 3)
+b = np.random.randn(3, 2) # b.shape = (3, 2)
+c = a*b
+\end{lstlisting}
+What will be the shape of "c"?
+\begin{itemize}
+    \item c.shape = (4,2)
+    \item The computation cannot happen because the sizes don't match. It's going to be "Error"! (X)
+    \item c.shape = (3, 3)
+    \item c.shape = (4, 3)
+\end{itemize}
+\textbf{6.} Suppose you have $n_x$ input features per example. Recall that $X = [x^{(1)} x^{(2)} ... x^{(m)}]$. What is the dimension of X?
+\begin{itemize}
+    \item (1,m)(1,m)
+    \item $(m,n_x)$
+    \item $(n_x, m)$ (X)
+    \item (m,1)(m,1)
+\end{itemize}
+\textbf{7.} Recall that "np.dot(a,b)" performs a matrix multiplication on a and b, whereas "a*b" performs an element-wise multiplication.
+
+Consider the two following random arrays "a" and "b":
+\begin{lstlisting}
+a = np.random.randn(12288, 150) # a.shape = (12288, 150)
+b = np.random.randn(150, 45) # b.shape = (150, 45)
+c = np.dot(a,b)
+\end{lstlisting}
+What is the shape of c?
+\begin{itemize}
+    \item c.shape = (12288, 150)
+    \item c.shape = (12288, 45) (X)
+    \item c.shape = (150,150)
+    \item The computation cannot happen because the sizes don't match. It's going to be "Error"!
+\end{itemize}
+\textbf{8.} Consider the following code snippet:
+\begin{lstlisting}
+# a.shape = (3,4)
+# b.shape = (4,1)
+
+for i in range(3):
+  for j in range(4):
+    c[i][j] = a[i][j] + b[j]
+\end{lstlisting}
+How do you vectorize this?
+\begin{itemize}
+    \item c = a.T + b.T
+    \item c = a.T + b
+    \item c = a + b.T
+    \item c = a + b (X)
+\end{itemize}
+\textbf{9.} Consider the following code:
+\begin{lstlisting}
+a = np.random.randn(3, 3)
+b = np.random.randn(3, 1)
+c = a*b
+\end{lstlisting}
+What will be c? (If you’re not sure, feel free to run this in python to find out).
+\begin{itemize}
+    \item This will invoke broadcasting, so b is copied three times to become (3,3), and * is an element-wise product so c.shape will be (3, 3) (X)
+    \item This will invoke broadcasting, so b is copied three times to become (3, 3), and * invokes a matrix multiplication operation of two 3x3 matrices so c.shape will be (3, 3)
+    \item This will multiply a 3x3 matrix a with a 3x1 vector, thus resulting in a 3x1 vector. That is, c.shape = (3,1).
+    \item It will lead to an error since you cannot use “*” to operate on these two matrices. You need to instead use np.dot(a,b)
+\end{itemize}
+\textbf{10.} Consider the following computation graph.
+What is the output J?
+\begin{itemize}
+    \item J = (c - 1)*(b + a)
+    \item J = (a - 1) * (b + c) (X)
+    \item J = a*b + b*c + a*c
+    \item J = (b - 1) * (c + a)
+\end{itemize}
